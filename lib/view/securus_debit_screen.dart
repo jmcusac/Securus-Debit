@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../model/contact_model.dart';
+import '../../view_model/contact_view_model.dart';
+import '../provider/contact_provider.dart';
 
 class SecurusDebitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ContactProvider(),
+      create: (_) => Contact(),
       child: SecurusDebitView(),
     );
   }
@@ -43,7 +46,7 @@ class SecurusDebitView extends StatelessWidget {
             children: [_buildDetailsSection()],
           ),
           Expanded(
-            child: Consumer<ContactProvider>(
+            child: Consumer<Contact>(
               builder: (context, provider, child) {
                 if (provider.contacts.isEmpty) {
                   return Center(
@@ -143,7 +146,7 @@ class _AddContactDialogState extends State<AddContactDialog> {
         ),
         TextButton(
           onPressed: () {
-            final provider = context.read<ContactProvider>();
+            final provider = context.read<Contact>();
             provider.addContact(
               Contact(
                 name: _nameController.text,
@@ -208,7 +211,7 @@ class ContactListItem extends StatelessWidget {
                 PopupMenuButton(
                   onSelected: (value) {
                     if (value == 'remove') {
-                      context.read<ContactProvider>().removeContact(index);
+                      context.read<Contact>().removeContact(index);
                     }
                   },
                   itemBuilder: (context) => [
