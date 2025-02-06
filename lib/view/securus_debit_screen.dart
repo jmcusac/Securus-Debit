@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../model/contact_model.dart';
-import '../../view_model/contact_view_model.dart';
-import '../provider/contact_provider.dart';
+import '../view_model/contact_view_model.dart';
+import '../service/contact_service.dart';
 
 class SecurusDebitScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => Contact(),
+      create: (_) => ContactViewModel(ContactService()),
       child: SecurusDebitView(),
     );
   }
@@ -46,9 +46,17 @@ class SecurusDebitView extends StatelessWidget {
             children: [_buildDetailsSection()],
           ),
           Expanded(
-            child: Consumer<Contact>(
-              builder: (context, provider, child) {
-                if (provider.contacts.isEmpty) {
+            child: Consumer<ContactViewModel>(
+              builder: (context, viewModel, child) {
+                if (viewModel.isLoading) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (viewModel.error != null) {
+                  return Center(child: Text(viewModel.error!));
+                }
+
+                if (viewModel.contacts.isEmpty) {
                   return Center(
                     child: Text(
                       'Click (+) to add a contact to make a deposit\nto their Securus Debit account.',
@@ -56,11 +64,12 @@ class SecurusDebitView extends StatelessWidget {
                     ),
                   );
                 }
+
                 return ListView.builder(
-                  itemCount: provider.contacts.length,
+                  itemCount: viewModel.contacts.length,
                   itemBuilder: (context, index) {
                     return ContactListItem(
-                      contact: provider.contacts[index],
+                      contact: viewModel.contacts[index],
                       index: index,
                     );
                   },
@@ -145,15 +154,22 @@ class _AddContactDialogState extends State<AddContactDialog> {
           child: Text('Cancel'),
         ),
         TextButton(
-          onPressed: () {
-            final provider = context.read<Contact>();
-            provider.addContact(
-              Contact(
-                name: _nameController.text,
-                facility: _facilityController.text,
-              ),
-            );
-            Navigator.pop(context);
+          onPressed: () async {
+            try {
+              final viewModel = context.read<ContactViewModel>();
+              await viewModel.addContact(
+                Contact(
+                  name: _nameController.text,
+                  facility: _facilityController.text,
+                ),
+              );
+              Navigator.pop(context);
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text('Failed to add contact: ${e.toString()}')),
+              );
+            }
           },
           child: Text('Add'),
         ),
@@ -209,9 +225,19 @@ class ContactListItem extends StatelessWidget {
                   ),
                 ),
                 PopupMenuButton(
-                  onSelected: (value) {
+                  onSelected: (value) async {
                     if (value == 'remove') {
-                      context.read<Contact>().removeContact(index);
+                      try {
+                        await context
+                            .read<ContactViewModel>()
+                            .removeContact(index);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  'Failed to remove contact: ${e.toString()}')),
+                        );
+                      }
                     }
                   },
                   itemBuilder: (context) => [

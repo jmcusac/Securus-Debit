@@ -1,3 +1,5 @@
+import '../model/contact_model.dart';
+
 class ContactService {
   List<Contact> _contacts = [];
 
