@@ -1,5 +1,8 @@
 {
+    // Flutter SDK Path
     "dart.flutterSdkPath": ".fvm/flutter_sdk",
+
+    // Dart-specific settings
     "dart.lineLength": 80,
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
@@ -17,10 +20,30 @@
         "**/*.freezed.dart": true,
         "**/*.g.dart": true
     },
+
+    // Dart-specific editor settings
     "[dart]": {
         "editor.defaultFormatter": "Dart-Code.dart-code",
         "editor.suggestSelection": "first",
         "editor.tabCompletion": "onlySnippets",
         "editor.wordBasedSuggestions": false
-    }
+    },
+
+    // Java-specific settings
+    "java.home": "/opt/homebrew/opt/openjdk@11",  // Path to JDK 11 installed by Homebrew
+    "java.jdt.ls.vmargs": "-Xms128m -Xmx1G -XX:+UseG1GC",  // Configure memory for the Java Language Server
+    "java.configuration.runtimes": [
+        {
+            "name": "Java SE 11",
+            "path": "/opt/homebrew/opt/openjdk@11"  // Path to JDK 11
+        }
+    ],
+
+    // Optional: Enable Java formatting and linting options
+    "java.format.settings.url": "file:///path/to/your/eclipse-java-formatter.xml",  // Optional formatter
+    "java.format.settings.profile": "MyProfile",  // Optional formatting profile
+
+    // Optional: Java Project-specific Settings
+    "java.import.gradle.enabled": true,
+    "java.import.maven.enabled": true
 }
