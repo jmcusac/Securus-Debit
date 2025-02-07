@@ -43,9 +43,7 @@ class ContactViewModel extends ChangeNotifier {
   Future<void> addContact(Contact contact) async {
     try {
       _setState(ViewState.loading);
-
       await _contactService.addContact(contact);
-      _contacts.add(contact);
       _setState(ViewState.loaded);
     } catch (e) {
       _error = e.toString();
@@ -67,6 +65,10 @@ class ContactViewModel extends ChangeNotifier {
       final contact = _contacts[index];
       await _contactService.removeContact(contact);
       _contacts.removeAt(index);
+
+      // Refresh contact list after removal to make sure UI is updated
+      await loadContacts(); // Force a refresh of the list
+
       _setState(ViewState.loaded);
     } catch (e) {
       _error = e.toString();
