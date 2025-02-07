@@ -133,7 +133,7 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddContactDialog(context),
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white),
         backgroundColor: Color(0xFF4267B2),
       ),
     );
@@ -178,7 +178,11 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
                     onPressed: () => _showAddContactDialog(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF4267B2),
+                      foregroundColor: Colors.white,
                       minimumSize: Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                     child: Text('Add Contact'),
                   ),
@@ -190,6 +194,9 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
                           ? Colors.grey
                           : Color(0xFF4267B2),
                       minimumSize: Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
                     ),
                     child: Text('Transaction Summary'),
                   ),
