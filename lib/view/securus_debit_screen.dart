@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:securus_debit/constants/securus_branding.dart';
 import '../model/contact_model.dart';
 import '../view_model/contact_view_model.dart';
 import '../service/contact_service.dart';
@@ -27,7 +28,7 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Color(0xFF4267B2),
+        backgroundColor: SecurusColors.primary,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -134,7 +135,7 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddContactDialog(context),
         child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: Color(0xFF4267B2),
+        backgroundColor: SecurusColors.primary,
       ),
     );
   }
@@ -177,7 +178,7 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
                   ElevatedButton(
                     onPressed: () => _showAddContactDialog(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF4267B2),
+                      backgroundColor: SecurusColors.primary,
                       foregroundColor: Colors.white,
                       minimumSize: Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
@@ -192,7 +193,7 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: viewModel.contacts.isEmpty
                           ? Colors.grey
-                          : Color(0xFF4267B2),
+                          : SecurusColors.primary,
                       minimumSize: Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -325,7 +326,7 @@ class ContactListItem extends StatelessWidget {
                     Text(
                       contact.depositStatus,
                       style: TextStyle(
-                        color: Color(0xFF4267B2),
+                        color: SecurusColors.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
