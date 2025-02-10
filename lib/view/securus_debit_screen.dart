@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:securus_debit/constants/securus_branding.dart';
+import '../constants/securus_branding.dart';
 import '../model/contact_model.dart';
 import '../view_model/contact_view_model.dart';
 import '../service/contact_service.dart';
+import '../view/contact_list_item.dart';
 
 class SecurusDebitScreen extends StatelessWidget {
   @override
@@ -88,7 +89,6 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
                   return Center(child: Text(viewModel.error!));
                 }
 
-                // Always check for empty contacts list, even during loading
                 if (viewModel.contacts.isEmpty &&
                     viewModel.state != ViewState.loading) {
                   return Center(
@@ -108,18 +108,17 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
 
                 return Stack(
                   children: [
-                    // Contact list
                     ListView.builder(
                       padding: EdgeInsets.all(16),
                       itemCount: viewModel.contacts.length,
                       itemBuilder: (context, index) {
+                        final contact = viewModel.contacts[index];
                         return ContactListItem(
-                          contact: viewModel.contacts[index],
+                          contact: contact,
                           index: index,
                         );
                       },
                     ),
-                    // Loading indicator overlaid when loading
                     if (viewModel.state == ViewState.loading)
                       Container(
                         color: Colors.white.withOpacity(0.7),
@@ -216,126 +215,6 @@ class _SecurusDebitViewState extends State<SecurusDebitView> {
       builder: (dialogContext) => ChangeNotifierProvider.value(
         value: context.read<ContactViewModel>(),
         child: AddContactDialog(),
-      ),
-    );
-  }
-}
-
-class ContactListItem extends StatelessWidget {
-  final Contact contact;
-  final int index;
-
-  const ContactListItem({
-    required this.contact,
-    required this.index,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Contact:',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        contact.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        contact.facility,
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                PopupMenuButton(
-                  icon: Icon(Icons.more_vert, color: Colors.grey[600]),
-                  onSelected: (value) async {
-                    if (value == 'remove') {
-                      try {
-                        await context
-                            .read<ContactViewModel>()
-                            .removeContact(index);
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text(
-                                  'Failed to remove contact: ${e.toString()}')),
-                        );
-                      }
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'deposit',
-                      child: Text('Make Deposit'),
-                    ),
-                    PopupMenuItem(
-                      enabled: false, // Disabled as per requirements
-                      value: 'summary',
-                      child: Text(
-                        'Transaction Summary',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 'remove',
-                      child: Text('Remove Contact'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Deposit:',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      contact.depositStatus,
-                      style: TextStyle(
-                        color: SecurusColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
